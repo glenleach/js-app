@@ -2,65 +2,46 @@
 
 
 ```
+# Demo App – DevOps Bootcamp Training (TechWorld with Nana)
 
-# Demo App – Deploying Images in Kubernetes from Private Docker Repository  
-**DevOps Bootcamp with Nana**
-
-This demo app is designed for hands-on learning in the [DevOps Bootcamp with Nana](https://www.techworld-with-nana.com/devops-bootcamp).  
-It demonstrates how to containerize a simple user profile application and deploy it to Kubernetes using images stored in a private Docker registry.
+This repository is part of the **DevOps Bootcamp** from [TechWorld with Nana](https://www.techworld-with-nana.com/devops-bootcamp).  
+It is designed as a hands-on training project to help you learn and practice core DevOps concepts, including Docker, container orchestration, and working with multi-component applications.
 
 ---
 
-## 📚 Overview
+## 📚 Project Purpose
 
-This demo app shows a simple user profile app set up using:
+This demo app provides a simple user profile application to help you:
 
-- **Frontend:** `index.html` with pure JavaScript and CSS styles
-- **Backend:** Node.js with Express module
-- **Database:** MongoDB for data storage
-
-All components are Docker-based and can be orchestrated with Docker Compose or deployed to Kubernetes.
-
----
-
-## 🎯 DevOps & Kubernetes Learning Objectives
-
-- **Containerization:** Build and run multi-component apps with Docker.
-- **Private Docker Registry:** Push/pull images securely for production use.
-- **Kubernetes Deployment:** Deploy and manage applications in Kubernetes using images from a private registry.
-- **DevOps Best Practices:** Practice environment setup, configuration, and automation.
+- Understand how to containerize applications with Docker
+- Practice running and connecting multiple services (Node.js, MongoDB, Mongo Express)
+- Learn how to use Docker Compose for multi-container orchestration
+- Prepare for deploying containerized apps in real-world DevOps scenarios
 
 ---
 
-## 🏗️ Application Structure
+## 🛠️ Tech Stack
 
-```
-project-root/
-├── app/               # Node.js backend and static frontend
-│   ├── server.js
-│   ├── package.json
-│   └── public/
-│       └── index.html
-├── Dockerfile         # For building the app image
-├── docker-compose.yaml
-└── README.md
-```
+- **Frontend:** `index.html` with pure JavaScript and CSS
+- **Backend:** Node.js with Express
+- **Database:** MongoDB
+- **Admin UI:** Mongo Express
+
+All components are Docker-based for easy setup and portability.
 
 ---
 
-## 🚀 Running the Application
+## 🚀 Getting Started
 
-### With Docker
+### Running with Docker
 
-#### To start the application
-
-**Step 1:** Create docker network
+#### 1. Create Docker Network (optional)
 
 ```bash
 docker network create mongo-network
 ```
 
-**Step 2:** Start MongoDB
+#### 2. Start MongoDB
 
 ```bash
 docker run -d -p 27017:27017 \
@@ -69,7 +50,7 @@ docker run -d -p 27017:27017 \
   --name mongodb --net mongo-network mongo
 ```
 
-**Step 3:** Start mongo-express
+#### 3. Start Mongo Express
 
 ```bash
 docker run -d -p 8081:8081 \
@@ -80,15 +61,18 @@ docker run -d -p 8081:8081 \
   -e ME_CONFIG_MONGODB_SERVER=mongodb mongo-express
 ```
 
-> _NOTE: Creating a docker network is optional. You can start both containers in the default network. In this case, just omit the `--net` flag in the `docker run` command._
+> _NOTE: Creating a custom Docker network is optional. You can start both containers in the default network by omitting the `--net` flag._
 
-**Step 4:** Open mongo-express from browser
+#### 4. Open Mongo Express in your browser
 
 [http://localhost:8081](http://localhost:8081)
 
-**Step 5:** Create `user-account` database and `users` collection in mongo-express
+#### 5. Create Database and Collection
 
-**Step 6:** Start your Node.js application locally - go to `app` directory of project
+- In Mongo Express, create a database named `user-account`
+- Create a collection named `users` in that database
+
+#### 6. Start the Node.js Application
 
 ```bash
 cd app
@@ -96,29 +80,28 @@ npm install
 node server.js
 ```
 
-**Step 7:** Access your Node.js application UI from browser
+#### 7. Access the Application UI
 
 [http://localhost:3000](http://localhost:3000)
 
 ---
 
-### With Docker Compose
+### Running with Docker Compose
 
-#### To start the application
-
-**Step 1:** Start MongoDB and mongo-express
+#### 1. Start MongoDB and Mongo Express
 
 ```bash
 docker-compose -f docker-compose.yaml up
 ```
 
-_You can access the mongo-express under [http://localhost:8081](http://localhost:8081) from your browser_
+- Access Mongo Express at [http://localhost:8081](http://localhost:8081)
 
-**Step 2:** In mongo-express UI - create a new database "user-account"
+#### 2. In Mongo Express UI
 
-**Step 3:** In mongo-express UI - create a new collection "users" in the database "user-account"
+- Create a new database: `user-account`
+- Create a new collection: `users` in the `user-account` database
 
-**Step 4:** Start node server
+#### 3. Start Node.js Server
 
 ```bash
 cd app
@@ -126,79 +109,37 @@ npm install
 node server.js
 ```
 
-**Step 5:** Access the Node.js application from browser
+#### 4. Access the Application
 
 [http://localhost:3000](http://localhost:3000)
 
 ---
 
-#### To build a Docker image from the application
+### Building the Docker Image
+
+To build a Docker image from the application:
 
 ```bash
 docker build -t my-app:1.0 .
 ```
 
-The dot (`.`) at the end of the command denotes the location of the Dockerfile.
+The dot (`.`) at the end specifies the location of the Dockerfile.
 
 ---
 
-## ☸️ Deploying to Kubernetes from a Private Docker Registry
+## 🎯 Learning Objectives
 
-**As part of the DevOps Bootcamp, you will:**
-
-1. **Build and tag your Docker image.**
-2. **Push the image to your private Docker registry (e.g., Docker Hub, GitLab Container Registry, or a self-hosted registry).**
-3. **Create a Kubernetes Secret for registry authentication:**
-
-   ```bash
-   kubectl create secret docker-registry regcred \
-     --docker-server=<your-registry-server> \
-     --docker-username=<your-username> \
-     --docker-password=<your-password> \
-     --docker-email=<your-email>
-   ```
-
-4. **Reference the secret in your Kubernetes deployment YAML:**
-
-   ```yaml
-   spec:
-     containers:
-       - name: my-app
-         image: <your-private-repo>/my-app:1.0
-     imagePullSecrets:
-       - name: regcred
-   ```
-
-5. **Apply your deployment:**
-
-   ```bash
-   kubectl apply -f deployment.yaml
-   ```
-
-> _This process ensures your Kubernetes cluster can securely pull images from your private registry._
+- Practice containerizing applications and managing multi-container setups
+- Gain experience with Docker CLI and Docker Compose
+- Prepare for more advanced DevOps topics such as CI/CD and Kubernetes
 
 ---
 
-## 📖 Additional Resources
-
-- [DevOps Bootcamp with Nana](https://www.techworld-with-nana.com/devops-bootcamp)
-- [Docker Documentation](https://docs.docker.com/)
-- [Kubernetes Docs: Pull an Image from a Private Registry](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)
-- [MongoDB Documentation](https://docs.mongodb.com/)
-- [Node.js Documentation](https://nodejs.org/en/docs/)
-
----
-
-## 🙌 Contributing
-
-This repository is for demo and learning purposes.  
-Feel free to fork, experiment, and submit pull requests as you follow along with the bootcamp!
-
----
-
-Happy DevOps & Kubernetes Learning! 🚀
-
+Happy DevOps Learning with Nana! 🚀
 ```
+
+
+
 
 
 
