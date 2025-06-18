@@ -1,11 +1,5 @@
-
-
-
-```
 # Demo App – DevOps Bootcamp Training (TechWorld with Nana)
-
-This repository is part of the **DevOps Bootcamp** from [TechWorld with Nana](https://www.techworld-with-nana.com/devops-bootcamp).  
-It is designed as a hands-on training project to help you learn and practice core DevOps concepts, including Docker, container orchestration, and working with multi-component applications.
+This repository is part of the DevOps Bootcamp from TechWorld with Nana.
 
 ---
 
